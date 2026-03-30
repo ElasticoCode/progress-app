@@ -1,4 +1,5 @@
 import express from "express";
+import bcrypt from "bcrypt";
 import { pool } from "./db.js";
 
 const app = express();
@@ -23,7 +24,7 @@ app.get("/users/:id", (req, res) => {
     });
 });
 
-// ユーザーを追加するAPI
+// ユーザーを追加するAPI(教材)
 app.post("/users", (req, res) => {
     const { name, email, password_hash } = req.body;
     // ユーザーが既に存在しているか確認
@@ -41,6 +42,36 @@ app.post("/users", (req, res) => {
             }
         );
     });
+});
+
+// ユーザー新規登録API
+app.post("/register", async (req, res) => {
+    // 登録情報の受け取り
+    const { name, email, password } = req.body;
+
+    const saltRounds = 10;
+
+    try {
+        // パスワードのハッシュ化
+        const password_hash = await bcrypt.hash(password, saltRounds);
+
+        //ユーザーをデータベースに保存
+        pool.query("INSERT INTO users (name, email, password_hash) values ($1, $2, $3)",
+            [name, email, password_hash],
+            (error, results) => {
+                if (error) throw error;
+                res.status(201).send("ユーザーの作成に成功しました。");
+            }
+        );
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("サーバーエラーが発生しました。");
+    }
+});
+
+// ユーザーログインAPI
+app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
 });
 
 app.listen(PORT, () => {
