@@ -52,7 +52,7 @@ app.post("/users", (req, res) => {
 // ユーザー新規登録API
 app.post("/register", async (req, res) => {
     // 登録情報の受け取り
-    const { name, email, password } = req.body;
+    const { display_name, email, password } = req.body;
     const saltRounds = 10;
 
     try {
@@ -60,7 +60,9 @@ app.post("/register", async (req, res) => {
         const password_hash = await bcrypt.hash(password, saltRounds);
 
         //ユーザーをデータベースに保存
-        const result = await pool.query("INSERT INTO users (name, email, password_hash) values ($1, $2, $3)", [name, email, password_hash]);
+        const result = await pool.query(
+            "INSERT INTO users (display_name, email, password_hash) values ($1, $2, $3) RETURNING *",
+            [display_name, email, password_hash]);
 
         const user = result.rows[0];
 
