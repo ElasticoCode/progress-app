@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import JWT from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { pool } from "../config/db.js";
 
 // ユーザー新規登録API
@@ -18,8 +18,8 @@ export const registerUser = async (req, res) => {
 
         const user = result.rows[0];
 
-        // JWTの発行
-        const token = JWT.sign({ userId: user.id }, process.env.TOKEN_SECRET_KEY, { expiresIn: "24h" });
+        // jwtの発行
+        const token = jwt.sign({ userId: user.id }, process.env.TOKEN_SECRET_KEY, { expiresIn: "24h" });
         return res.status(201).json({ token });
     } catch (error) {
         console.error(error);
@@ -54,8 +54,8 @@ export const loginUser = async (req, res) => {
             return res.status(401).json({error: "メールアドレスまたはパスワードが間違っています"});
         }
 
-        // JWTの発行
-        const token = JWT.sign({ userId: user.id }, process.env.TOKEN_SECRET_KEY, { expiresIn: "24h" });
+        // jwtの発行
+        const token = jwt.sign({ userId: user.id }, process.env.TOKEN_SECRET_KEY, { expiresIn: "24h" });
 
         // レスポンス
         res.json({
