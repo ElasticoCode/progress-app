@@ -30,4 +30,14 @@ export const validateRegister = [
         }
         next(); // 次へ進む
     }
-]
+];
+
+// ユーザーログインAPI
+export const validateLogin = [
+    check("email")
+        .notEmpty().withMessage("メールアドレスは必須です。")
+        .isEmail().withMessage("有効なメールアドレスを入力してください。"),
+
+    check("password")
+        .notEmpty().withMessage("パスワードは必須です。")
+];

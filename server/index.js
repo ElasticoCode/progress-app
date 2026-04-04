@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import authRoutes from "./routes/auth.js";
-import { pool } from "./db.js";
+import authRoutes from "./routes/authRoutes.js";
+import { pool } from "./config/db.js";
 
 dotenv.config();
 const app = express();
@@ -89,13 +89,8 @@ app.put("/users/:id", (req, res) => {
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// ユーザー新規登録API
+// ユーザー新規登録API、ユーザーログインAPI
 app.use("/auth", authRoutes);
-
-// ユーザーログインAPI
-app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-});
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

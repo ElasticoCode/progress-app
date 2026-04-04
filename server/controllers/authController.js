@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
-import { pool } from "../db.js";
+import { pool } from "../config/db.js";
 
+// ユーザー新規登録API
 export const registerUser = async (req, res) => {
     const { display_name, email, password } = req.body;
     const saltRounds = 10;
@@ -21,13 +22,51 @@ export const registerUser = async (req, res) => {
         const token = JWT.sign({ userId: user.id }, process.env.TOKEN_SECRET_KEY, { expiresIn: "24h" });
         return res.status(201).json({ token });
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
         // UNIQUE制約違反の対応（重要） ← DBでエラーを検知する
-        if (err.code === "23505") {
+        if (error.code === "23505") {
             return res.status(400).send("すでにユーザーが存在しています。");
         }
 
+        res.status(500).send("サーバーエラーが発生しました。");
+    }
+};
+
+// ユーザーログインAPI
+export const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // ユーザーをデータベースから取得
+        const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({error: "メールアドレスまたはパスワードが間違っています"});
+        }
+
+        const user = result.rows[0];
+
+        // パスワードチェック
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+
+        if (!isMatch) {
+            return res.status(401).json({error: "メールアドレスまたはパスワードが間違っています"});
+        }
+
+        // JWTの発行
+        const token = JWT.sign({ userId: user.id }, process.env.TOKEN_SECRET_KEY, { expiresIn: "24h" });
+
+        // レスポンス
+        res.json({
+            token,
+            user: {
+                id: user.id,
+                display_name: user.display_name
+            }
+        });
+    } catch (error) {
+        console.error(error);
         res.status(500).send("サーバーエラーが発生しました。");
     }
 };
