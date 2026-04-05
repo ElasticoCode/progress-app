@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { pool } from "../config/db.js";
 
-// ユーザー新規登録API
+// ユーザー新規登録コントローラー
 export const registerUser = async (req, res) => {
     const { display_name, email, password } = req.body;
     const saltRounds = 10;
@@ -33,7 +33,7 @@ export const registerUser = async (req, res) => {
     }
 };
 
-// ユーザーログインAPI
+// ユーザーログインコントローラー
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 

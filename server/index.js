@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
 import { pool } from "./config/db.js";
 
 dotenv.config();
@@ -24,26 +25,6 @@ app.get("/users/:id", (req, res) => {
     pool.query("SELECT * FROM users WHERE id = $1", [id], (error, results) => {
         if (error) throw error;
         res.status(200).json(results.rows);
-    });
-});
-
-// ユーザーを追加するAPI(教材)
-app.post("/users", (req, res) => {
-    const { name, email, password_hash } = req.body;
-    // ユーザーが既に存在しているか確認
-    pool.query("SELECT s FROM users s WHERE s.email = $1", [email], (error, results) => {
-        if (error) throw error;
-        if (results.rows.length) {
-            return res.send("すでにユーザーが存在しています。");
-        }
-
-        pool.query("INSERT INTO users (name, email, password_hash) values ($1, $2, $3)",
-            [name, email, password_hash],
-            (error, results) => {
-                if (error) throw error;
-                res.status(201).send("ユーザーの作成に成功しました。");
-            }
-        );
     });
 });
 
@@ -89,8 +70,11 @@ app.put("/users/:id", (req, res) => {
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// ユーザー新規登録API、ユーザーログインAPI
+// ユーザー関連API
 app.use("/auth", authRoutes);
+
+// プロジェクト関連API
+app.use("/api", projectRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
