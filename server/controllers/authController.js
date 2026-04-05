@@ -22,7 +22,7 @@ export const registerUser = async (req, res) => {
         const token = jwt.sign({ userId: user.id }, process.env.TOKEN_SECRET_KEY, { expiresIn: "24h" });
         return res.status(201).json({ token });
     } catch (error) {
-        console.error(error);
+        console.error("registerUser error:", error);
 
         // UNIQUE制約違反の対応（重要） ← DBでエラーを検知する
         if (error.code === "23505") {
@@ -66,7 +66,7 @@ export const loginUser = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error(error);
+        console.error("loginUser error:", error);
         res.status(500).send("サーバーエラーが発生しました。");
     }
 };
