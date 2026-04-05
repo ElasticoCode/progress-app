@@ -1,4 +1,5 @@
-import { check, validationResult } from "express-validator";
+import { check } from "express-validator";
+import { handleValidationErrors } from "./validationResultHandler.js";
 
 // ユーザー新規登録API
 export const validateRegister = [
@@ -22,14 +23,8 @@ export const validateRegister = [
         return true;
     }),
 
-    // エラーをまとめて返すミドルウェア
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        next(); // 次へ進む
-    }
+    // エラーをまとめて返す
+    handleValidationErrors
 ];
 
 // ユーザーログインAPI
@@ -39,5 +34,8 @@ export const validateLogin = [
         .isEmail().withMessage("有効なメールアドレスを入力してください。"),
 
     check("password")
-        .notEmpty().withMessage("パスワードは必須です。")
+        .notEmpty().withMessage("パスワードは必須です。"),
+
+    // エラーをまとめて返す
+    handleValidationErrors
 ];

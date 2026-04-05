@@ -4,11 +4,6 @@ import { pool } from "../config/db.js";
 export const createProject = async (req, res) => {
     const { name, description = "" } = req.body;
 
-    // バリデーション
-    if (!name) {
-        return res.status(400).json({ message: "プロジェクト名は必須です。" });
-    }
-
     try {
         // ログインユーザーのID取得
         const userId = req.user.id;
@@ -72,6 +67,44 @@ export const deleteProject = async (req, res) => {
         });
     } catch (error) {
         console.error("deleteProject error:", error);
+        res.status(500).json({ message: "サーバーエラーが発生しました。" });
+    }
+};
+
+// プロジェクト名更新コントローラー
+export const updateProjectName = async (req, res) => {
+    const projectId = Number(req.params.id);
+    const { name } = req.body;
+
+    if (isNaN(projectId)) {
+        return res.status(400).json({ message: "無効なプロジェクトIDです。" });
+    }
+
+    if (!name) {
+        return res.status(400).json({ message: "プロジェクト名は必須です。" });
+    }
+
+    try {
+        // ログインユーザーのID取得
+        const userId = req.user.id;
+
+        const result = await pool.query(
+            "UPDATE projects SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 AND user_id = $3 RETURNING *",
+            [name, projectId, userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "プロジェクトが存在しないか権限がありません。" });
+        }
+
+        const updatedProject = result.rows[0];
+
+        res.status(200).json({
+            message: "プロジェクト名の更新に成功しました。",
+            project: updatedProject
+        });
+    } catch (error) {
+        console.error("updateProjectName error:", error);
         res.status(500).json({ message: "サーバーエラーが発生しました。" });
     }
 };
