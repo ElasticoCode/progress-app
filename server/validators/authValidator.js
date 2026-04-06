@@ -21,10 +21,7 @@ export const validateRegister = [
             throw new Error("パスワードが一致しません");
         }
         return true;
-    }),
-
-    // エラーをまとめて返す
-    handleValidationErrors
+    })
 ];
 
 // ユーザーログインAPI
@@ -34,8 +31,5 @@ export const validateLogin = [
         .isEmail().withMessage("有効なメールアドレスを入力してください。"),
 
     check("password")
-        .notEmpty().withMessage("パスワードは必須です。"),
-
-    // エラーをまとめて返す
-    handleValidationErrors
+        .notEmpty().withMessage("パスワードは必須です。")
 ];

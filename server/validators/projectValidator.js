@@ -1,5 +1,4 @@
-import { body } from "express-validator";
-import { handleValidationErrors } from "./validationResultHandler.js";
+import { param, body } from "express-validator";
 
 export const validateCreateProject = [
     body("name")
@@ -7,20 +6,22 @@ export const validateCreateProject = [
         .bail()
         .isString().withMessage("プロジェクト名は文字列である必要があります。")
         .bail()
-        .trim().isLength({ min: 1, max: 100 }).withMessage("プロジェクト名は1〜100文字で入力してください。"),
-
-    // エラーをまとめて返す
-    handleValidationErrors
+        .trim().isLength({ min: 1, max: 100 }).withMessage("プロジェクト名は1〜100文字で入力してください。")
 ];
 
-export const validateUpdateProjectName = [
+export const validateProjectId = [
+    param("id")
+        .isInt({ gt: 0 }).withMessage("有効なプロジェクトIDを指定してください。")
+];
+
+export const validateUpdateProject = [
     body("name")
-        .exists({ checkNull: true }).withMessage("プロジェクト名は必須です。")
-        .bail()
+        .optional()
         .isString().withMessage("プロジェクト名は文字列である必要があります。")
         .bail()
         .trim().isLength({ min: 1, max: 100 }).withMessage("プロジェクト名は1〜100文字で入力してください。"),
 
-    // エラーをまとめて返す
-    handleValidationErrors
+    body("description")
+        .optional()
+        .trim().isLength({ min: 1, max: 1000 }).withMessage("プロジェクトの説明は1〜1000文字で入力してください。")
 ];
