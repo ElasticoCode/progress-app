@@ -1,5 +1,26 @@
 import { pool } from "../config/db.js";
 
+// プロジェクト一覧取得コントローラー
+export const getProjects = async (req, res) => {
+    const userId = req.user.id; // ログインユーザーのID取得
+
+    try {
+        // 更新日時の降順で取得
+        const result = await pool.query(
+            "SELECT id, name, description, created_at, updated_at FROM projects WHERE user_id = $1 ORDER BY updated_at DESC",
+            [userId]
+        );
+
+        res.status(200).json({
+            message: "プロジェクト一覧の取得に成功しました。",
+            projects: result.rows
+        });
+    } catch (error) {
+        console.error("getProjects error:", error);
+        res.status(500).json({ message: "サーバーエラーが発生しました。" });
+    }
+};
+
 // プロジェクト作成コントローラー
 export const createProject = async (req, res) => {
     const userId = req.user.id; // ログインユーザーのID取得
