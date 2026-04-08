@@ -24,7 +24,7 @@ export const getProjects = async (req, res) => {
 // プロジェクト作成コントローラー
 export const createProject = async (req, res) => {
     const userId = req.user.id; // ログインユーザーのID取得
-    const { name, description = "" } = req.body;
+    const { name, description } = req.body;
 
     try {
         const result = await pool.query(
@@ -48,11 +48,6 @@ export const createProject = async (req, res) => {
 
     } catch (error) {
         console.error("createProject error:", error);
-
-        if (error.code === '23503') {
-            return res.status(400).json({ message: "ユーザーが存在しません。" });
-        }
-
         res.status(500).json({ message: "サーバーエラーが発生しました。" });
     }
 };

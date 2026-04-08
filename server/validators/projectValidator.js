@@ -2,7 +2,7 @@ import { param, body } from "express-validator";
 
 export const validateCreateProject = [
     body("name")
-        .exists({ checkNull: true }).withMessage("プロジェクト名は必須です。")
+        .notEmpty().withMessage("プロジェクト名は必須です。")
         .bail()
         .isString().withMessage("プロジェクト名は文字列である必要があります。")
         .bail()
