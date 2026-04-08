@@ -7,15 +7,15 @@ import { getProjects, createProject, updateProject, deleteProject } from "../con
 const router = express.Router();
 
 // プロジェクト一覧取得API
-router.get("/projects", authMiddleware, getProjects);
+router.get("/", authMiddleware, getProjects);
 
 // プロジェクト作成API
-router.post("/projects", authMiddleware, validateCreateProject, handleValidationErrors, createProject);
+router.post("/", authMiddleware, validateCreateProject, handleValidationErrors, createProject);
 
 // プロジェクト更新API
-router.put("/projects/:id", authMiddleware, validateProjectId, validateUpdateProject, handleValidationErrors, updateProject);
+router.put("/:id", authMiddleware, validateProjectId, validateUpdateProject, handleValidationErrors, updateProject);
 
 // プロジェクト削除API
-router.delete("/projects/:id", authMiddleware, validateProjectId, handleValidationErrors, deleteProject);
+router.delete("/:id", authMiddleware, validateProjectId, handleValidationErrors, deleteProject);
 
 export default router;

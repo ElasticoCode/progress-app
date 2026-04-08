@@ -7,7 +7,7 @@ export const getProjects = async (req, res) => {
     try {
         // 更新日時の降順で取得
         const result = await pool.query(
-            "SELECT id, name, description, created_at, updated_at FROM projects WHERE user_id = $1 ORDER BY updated_at DESC",
+            "SELECT * FROM projects WHERE user_id = $1 ORDER BY updated_at DESC",
             [userId]
         );
 

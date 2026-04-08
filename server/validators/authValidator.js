@@ -1,7 +1,7 @@
 import { check } from "express-validator";
 import { handleValidationErrors } from "./validationResultHandler.js";
 
-// ユーザー新規登録API
+// 新規登録API
 export const validateRegister = [
     check("display_name").notEmpty().withMessage("表示名は必須です。"),
 
@@ -24,7 +24,7 @@ export const validateRegister = [
     })
 ];
 
-// ユーザーログインAPI
+// ログインAPI
 export const validateLogin = [
     check("email")
         .notEmpty().withMessage("メールアドレスは必須です。")

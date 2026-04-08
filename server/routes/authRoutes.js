@@ -5,10 +5,10 @@ import { registerUser, loginUser } from "../controllers/authController.js";
 
 const router = express.Router();
 
-// ユーザー新規登録API
+// 新規登録API
 router.post("/register", validateRegister, handleValidationErrors, registerUser);
 
-// ユーザーログインAPI
+// ログインAPI
 router.post("/login", validateLogin, handleValidationErrors, loginUser);
 
 export default router;

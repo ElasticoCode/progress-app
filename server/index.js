@@ -1,10 +1,9 @@
 import express from "express";
-import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
 import { pool } from "./config/db.js";
 
-dotenv.config();
 const app = express();
 const PORT = 5000;
 
@@ -70,11 +69,14 @@ app.put("/users/:id", (req, res) => {
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// ユーザー関連API
-app.use("/auth", authRoutes);
+// 認証関連API
+app.use("/api/auth", authRoutes);
 
 // プロジェクト関連API
-app.use("/api", projectRoutes);
+app.use("/api/projects", projectRoutes);
+
+// タスク関連API
+app.use("/api/tasks", taskRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
