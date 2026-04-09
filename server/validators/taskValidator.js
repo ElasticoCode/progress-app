@@ -1,4 +1,10 @@
-import { body } from "express-validator";
+import { param, body } from "express-validator";
+
+export const validateGetTasks = [
+    param("projectId")
+        // 0より大きい整数かをチェックする
+        .isInt({ gt: 0 }).withMessage("有効なプロジェクトIDを指定してください。")
+];
 
 export const validateCreateTask = [
     body("project_id")
